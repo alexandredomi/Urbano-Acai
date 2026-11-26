@@ -3,9 +3,9 @@ const BUSINESS_HOURS = {
   0: { start: 14 * 60 + 30, end: 3 * 60 },
   1: null,
   2: null,
-  3: { start: 14 * 60 + 30, end: 1 * 60 + 30 },
-  4: { start: 14 * 60 + 30, end: 1 * 60 + 30 },
-  5: { start: 14 * 60 + 30, end: 1 * 60 + 30 },
+  3: { start: 14 * 60 + 30, end: 2 * 60 },
+  4: { start: 14 * 60 + 30, end: 2 * 60 },
+  5: { start: 14 * 60 + 30, end: 2 * 60 },
   6: { start: 14 * 60 + 30, end: 3 * 60 }
 };
 function updateBusinessStatus(){
