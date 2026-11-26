@@ -1,18 +1,23 @@
 const WHATSAPP = '5553991883532'; // Brasil (55) + DDD 53 + número do panfleto.
 const BUSINESS_HOURS = {
+  0: { start: 14 * 60 + 30, end: 2 * 60 },
   1: null,
-  2: { start: 13, end: 22 },
-  3: { start: 13, end: 22 },
-  4: { start: 13, end: 22 },
-  5: { start: 13, end: 22 },
-  6: { start: 13, end: 22 },
-  0: { start: 13, end: 22 }
+  2: null,
+  3: { start: 14 * 60 + 30, end: 2 * 60 },
+  4: { start: 14 * 60 + 30, end: 2 * 60 },
+  5: { start: 14 * 60 + 30, end: 2 * 60 },
+  6: { start: 14 * 60 + 30, end: 2 * 60 }
 };
 function updateBusinessStatus(){
   const now=new Date();
   const day=now.getDay();
-  const hour=now.getHours();
-  const isOpen=BUSINESS_HOURS[day]&&hour>=BUSINESS_HOURS[day].start&&hour<BUSINESS_HOURS[day].end;
+  const minute=now.getHours()*60+now.getMinutes();
+  const todayHours=BUSINESS_HOURS[day];
+  const previousDayHours=BUSINESS_HOURS[(day+6)%7];
+  const isOpen=Boolean(
+    (todayHours&&(todayHours.end>todayHours.start?minute>=todayHours.start&&minute<todayHours.end:minute>=todayHours.start))||
+    (previousDayHours&&previousDayHours.end<=previousDayHours.start&&minute<previousDayHours.end)
+  );
   const statusText=document.querySelector('#statusText');
   const statusIndicator=document.querySelector('#statusIndicator');
   statusText.textContent=isOpen?'Aberto agora':'Fechado';
@@ -29,6 +34,31 @@ try { cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || []; } catch {
 const money=value=>value.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const sizeRoot=document.querySelector('#sizes'),includedRoot=document.querySelector('#included'),extrasRoot=document.querySelector('#extras');
 const pickupStoreInput=document.querySelector('#pickupStore');
+const deliveryOptionInput=document.querySelector('#deliveryOption');
+const deliveryFields=document.querySelector('#deliveryFields');
+const deliveryAddressInputs=['#deliveryStreet','#deliveryNumber','#deliveryNeighborhood'].map(selector=>document.querySelector(selector));
+const paymentMethodInput=document.querySelector('#paymentMethod');
+const cashChangeFields=document.querySelector('#cashChangeFields');
+const cashChangeChoiceInput=document.querySelector('#cashChangeChoice');
+const cashChangeAmountField=document.querySelector('#cashChangeAmountField');
+const cashChangeAmountInput=document.querySelector('#cashChangeAmount');
+function updateFulfillmentFields(){
+  const isDelivery=deliveryOptionInput.checked;
+  deliveryFields.hidden=!isDelivery;
+  deliveryAddressInputs.forEach(input=>input.required=isDelivery);
+  document.querySelector('#cartTotalLabel').textContent=isDelivery?'Subtotal':'Total';
+}
+function updatePaymentFields(){
+  const isCash=paymentMethodInput.value==='cash';
+  const needsChange=cashChangeChoiceInput.value==='yes';
+  cashChangeFields.hidden=!isCash;
+  cashChangeChoiceInput.required=isCash;
+  cashChangeAmountField.hidden=!isCash||!needsChange;
+  cashChangeAmountInput.required=isCash&&needsChange;
+}
+document.querySelectorAll('input[name="fulfillment"]').forEach(input=>input.addEventListener('change',updateFulfillmentFields));
+paymentMethodInput.addEventListener('change',updatePaymentFields);
+cashChangeChoiceInput.addEventListener('change',updatePaymentFields);
 function syncIncludedOptions(){
   [...includedRoot.children].forEach(button=>{
     const name=button.querySelector('span').textContent;
@@ -107,7 +137,6 @@ function currentOrder(){
     included: [...selectedIncluded],
     extras: selectedExtraData,
     note: document.querySelector('#notes').value.trim(),
-    pickup: pickupStoreInput.checked,
     qty: 1,
     price: size.price + selectedExtraData.reduce((sum,item)=>sum+item.price,0)
   };
@@ -129,7 +158,7 @@ function renderCart(){
     root.innerHTML='<p class="empty">Sua sacola está vazia.<br>Monte um açaí e adicione aqui.</p>';
     return;
   }
-  root.innerHTML=cart.map(item=>`<article class="cart-item"><div class="cart-item-head"><div><strong>${item.name}</strong><small>${item.detail}</small></div><button class="remove" data-id="${item.id}" aria-label="Remover">×</button></div><p>${item.included.length?item.included.join(', '):'Sem complementos'}${item.extras.length?`<br><b>Extras:</b> ${item.extras.map(extra=>extra.name).join(', ')}`:''}${item.note?`<br><b>Obs.:</b> ${item.note}`:''}${item.pickup?`<br><b>Retirada:</b> loja`:'<br><b>Retirada:</b> em breve'}</p><div class="cart-bottom"><div class="quantity"><button data-action="minus" data-id="${item.id}" aria-label="Diminuir">−</button><span>${item.qty}</span><button data-action="plus" data-id="${item.id}" aria-label="Aumentar">+</button></div><strong>${money(item.price*item.qty)}</strong></div></article>`).join('');
+  root.innerHTML=cart.map(item=>`<article class="cart-item"><div class="cart-item-head"><div><strong>${item.name}</strong><small>${item.detail}</small></div><button class="remove" data-id="${item.id}" aria-label="Remover">×</button></div><p>${item.included.length?item.included.join(', '):'Sem complementos'}${item.extras.length?`<br><b>Extras:</b> ${item.extras.map(extra=>extra.name).join(', ')}`:''}${item.note?`<br><b>Obs.:</b> ${item.note}`:''}</p><div class="cart-bottom"><div class="quantity"><button data-action="minus" data-id="${item.id}" aria-label="Diminuir">−</button><span>${item.qty}</span><button data-action="plus" data-id="${item.id}" aria-label="Aumentar">+</button></div><strong>${money(item.price*item.qty)}</strong></div></article>`).join('');
 }
 function resetBuilder(){
   selectedSize=null;
@@ -137,10 +166,44 @@ function resetBuilder(){
   selectedExtras=[];
   [...sizeRoot.children,...includedRoot.children,...extrasRoot.children].forEach(button=>button.classList.remove('active'));
   document.querySelector('#notes').value='';
-  pickupStoreInput.checked=false;
   updateSelectionInfo();
 }
-document.querySelector('#addToCart').onclick=event=>{event.stopPropagation();const order=currentOrder();if(!order){showToast('Escolha o tamanho do seu açaí primeiro.','error');return}if(!pickupStoreInput.checked){showToast('Selecione como deseja receber o seu pedido.','error');return}cart.push(order);renderCart();resetBuilder();toggleCart(false);showToast('Açaí adicionado à sua sacola!','success')};
+function validateFulfillment(){
+  if(!pickupStoreInput.checked&&!deliveryOptionInput.checked){
+    showToast('Escolha entre entrega e retirada na loja.','error');
+    return false;
+  }
+  if(deliveryOptionInput.checked){
+    const missingAddress=deliveryAddressInputs.find(input=>!input.value.trim());
+    if(missingAddress){
+      showToast('Informe a rua, o número e o bairro para a entrega.','error');
+      missingAddress.focus();
+      return false;
+    }
+  }
+  return true;
+}
+function validatePayment(){
+  if(!paymentMethodInput.value){
+    showToast('Selecione uma forma de pagamento.','error');
+    paymentMethodInput.focus();
+    return false;
+  }
+  if(paymentMethodInput.value==='cash'){
+    if(!cashChangeChoiceInput.value){
+      showToast('Informe se vai precisar de troco.','error');
+      cashChangeChoiceInput.focus();
+      return false;
+    }
+    if(cashChangeChoiceInput.value==='yes'&&!(Number(cashChangeAmountInput.value)>0)){
+      showToast('Informe o valor para o qual precisa de troco.','error');
+      cashChangeAmountInput.focus();
+      return false;
+    }
+  }
+  return true;
+}
+document.querySelector('#addToCart').onclick=event=>{event.stopPropagation();const order=currentOrder();if(!order){showToast('Escolha o tamanho do seu açaí primeiro.','error');return}if(!validateFulfillment())return;cart.push(order);renderCart();resetBuilder();toggleCart(false);showToast('Açaí adicionado à sua sacola!','success')};
 document.querySelector('#cartItems').onclick=event=>{const button=event.target.closest('button[data-id]');if(!button)return;event.stopPropagation();const item=cart.find(x=>x.id===button.dataset.id);if(!item)return;if(button.classList.contains('remove'))cart=cart.filter(x=>x.id!==item.id);else if(button.dataset.action==='plus')item.qty++;else if(button.dataset.action==='minus')item.qty>1?item.qty--:cart=cart.filter(x=>x.id!==item.id);renderCart()};
 function showToast(message,type='error'){
   const toast=document.querySelector('#toast');
@@ -159,6 +222,7 @@ document.querySelector('#cartToggle').onclick=()=>toggleCart();document.querySel
 document.addEventListener('click',event=>{const summary=document.querySelector('.summary');if(summary.classList.contains('expanded')&&!summary.contains(event.target))toggleCart(false)});
 function handleSendOrder(){
   if(!cart.length){showToast('Sua sacola está vazia.','error');return}
+  if(!validateFulfillment()||!validatePayment())return;
 
   const now=new Date();
   const total=cart.reduce((sum,item)=>sum+item.price*item.qty,0);
@@ -172,15 +236,39 @@ function handleSendOrder(){
       `   ${item.detail}`,
       item.included.length?`   GRÁTIS: ${item.included.join(', ')}`:'',
       item.extras.length?`   EXTRAS: ${item.extras.map(x=>x.name).join(', ')}`:'',
-      item.note?`   OBS: ${item.note}`:'',
-      `   RETIRADA: ${item.pickup ? 'na loja' : 'em breve'}`
+      item.note?`   OBS: ${item.note}`:''
     ].filter(Boolean);
     return details.join('\n');
   }).join(`\n${divider}\n`);
-  const message=`*AÇAÍ URBANO — NOVO PEDIDO*\n\n\`\`\`\nPEDIDO #${orderCode}\n${date}\n${divider}\nTIPO: ${cart.some(item=>item.pickup) ? 'RETIRADA NO LOCAL' : 'ENTREGA'}\nENDEREÇO: Clóvis Beviláqua, 451\n${divider}\n${lines}\n${divider}\nITENS: ${quantity}\nTOTAL: ${money(total)}\n${divider}\n\`\`\`\n*Pagamento na retirada.*`;
+  const isDelivery=deliveryOptionInput.checked;
+  const paymentLabels={pix:'PIX',cash:'Dinheiro',credit:'Cartão de crédito',debit:'Cartão de débito'};
+  const address=deliveryAddressInputs.map(input=>input.value.trim()).join(', ');
+  const paymentDetails=paymentMethodInput.value==='cash'&&cashChangeChoiceInput.value==='yes'
+    ? `DINHEIRO — TROCO PARA: ${money(Number(cashChangeAmountInput.value))}`
+    : paymentLabels[paymentMethodInput.value];
+  const destination=isDelivery
+    ? `ENDEREÇO DE ENTREGA: ${address}`
+    : 'RETIRADA NO LOCAL: Clóvis Beviláqua, 451 - Simões Lopes, Pelotas/RS';
+  const totals=isDelivery
+    ? `SUBTOTAL DOS PRODUTOS: ${money(total)}\nTAXA DE ENTREGA: A CONSULTAR\nTOTAL FINAL: A CONFIRMAR PELO WHATSAPP`
+    : `TOTAL: ${money(total)}`;
+  const paymentFollowUp=paymentMethodInput.value==='pix'
+    ? 'Após confirmar o total, enviar a chave PIX pelo WhatsApp.'
+    : 'A loja confirmará o pedido pelo WhatsApp.';
+  const deliveryFollowUp=isDelivery
+    ? 'Aguardamos a consulta da taxa de entrega e a confirmação do total final.'
+    : '';
+  const message=`*AÇAÍ URBANO — NOVO PEDIDO*\n\n\`\`\`\nPEDIDO #${orderCode}\n${date}\n${divider}\nTIPO: ${isDelivery?'ENTREGA':'RETIRADA NO LOCAL'}\n${destination}\nPAGAMENTO: ${paymentDetails}\n${divider}\n${lines}\n${divider}\nITENS: ${quantity}\n${totals}\n${divider}\n\`\`\`\n${deliveryFollowUp?`*${deliveryFollowUp}*\n`:''}*${paymentFollowUp}*`;
 
   cart=[];
   localStorage.removeItem(CART_STORAGE_KEY);
+  document.querySelectorAll('input[name="fulfillment"]').forEach(input=>input.checked=false);
+  deliveryAddressInputs.forEach(input=>input.value='');
+  paymentMethodInput.value='';
+  cashChangeChoiceInput.value='';
+  cashChangeAmountInput.value='';
+  updateFulfillmentFields();
+  updatePaymentFields();
   renderCart();
   toggleCart(false);
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message)}`,'_blank');
@@ -222,4 +310,6 @@ document.addEventListener('keydown',event=>{
   const button=document.querySelector(selector);
   if(button) button.onclick=handleSendOrder;
 });
+updateFulfillmentFields();
+updatePaymentFields();
 updateSelectionInfo();renderCart();

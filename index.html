@@ -57,16 +57,54 @@
         </section>
 
         <section class="step">
-          <div class="step-heading"><span>4</span><div><h3>Como deseja receber?</h3><p>Hoje disponível: retirada no local. <br><a href="https://maps.google.com/maps?q=Clovis+Bevilaqua+451+Simoes+Lopes+Pelotas+RS" target="_blank" rel="noopener noreferrer">Clovis Bevilaqua 451 - Simoes Lopes - Pelotas-RS</a></p></div></div>
+          <div class="step-heading"><span>4</span><div><h3>Entrega ou retirada?</h3><p>Na entrega, consultamos a taxa e confirmamos o total pelo WhatsApp.</p></div></div>
           <div class="pickup-options">
             <label class="pickup-option" for="pickupStore">
-              <input id="pickupStore" type="checkbox">
+              <input id="pickupStore" name="fulfillment" type="radio" value="pickup">
               <span>Retirar na loja</span>
             </label>
-            <label class="pickup-option disabled" for="deliverySoon">
-              <input id="deliverySoon" type="checkbox" disabled>
-              <span>Entrega (em breve)</span>
+            <label class="pickup-option" for="deliveryOption">
+              <input id="deliveryOption" name="fulfillment" type="radio" value="delivery">
+              <span>Receber por entrega</span>
             </label>
+          </div>
+          <div class="delivery-fields" id="deliveryFields" hidden>
+            <p class="delivery-notice">Informe o endereço. A taxa de entrega será consultada e informada pelo WhatsApp antes de confirmar o pedido.</p>
+            <div class="address-grid">
+              <label class="checkout-field" for="deliveryStreet">Rua
+                <input id="deliveryStreet" type="text" maxlength="100" autocomplete="address-line1" placeholder="Nome da rua">
+              </label>
+              <label class="checkout-field" for="deliveryNumber">Número
+                <input id="deliveryNumber" type="text" maxlength="15" autocomplete="address-line2" placeholder="Nº da casa">
+              </label>
+              <label class="checkout-field" for="deliveryNeighborhood">Bairro
+                <input id="deliveryNeighborhood" type="text" maxlength="80" autocomplete="address-level3" placeholder="Seu bairro">
+              </label>
+            </div>
+          </div>
+          <div class="payment-fields">
+            <label class="checkout-field" for="paymentMethod">Forma de pagamento
+              <select id="paymentMethod" required>
+                <option value="">Selecione uma opção</option>
+                <option value="pix">PIX</option>
+                <option value="cash">Dinheiro</option>
+                <option value="credit">Cartão de crédito</option>
+                <option value="debit">Cartão de débito</option>
+              </select>
+            </label>
+            <div class="cash-change-fields" id="cashChangeFields" hidden>
+              <label class="checkout-field" for="cashChangeChoice">Vai precisar de troco?
+                <select id="cashChangeChoice">
+                  <option value="">Selecione uma opção</option>
+                  <option value="no">Não preciso de troco</option>
+                  <option value="yes">Sim, preciso de troco</option>
+                </select>
+              </label>
+              <label class="checkout-field" id="cashChangeAmountField" for="cashChangeAmount" hidden>Troco para quanto?
+                <input id="cashChangeAmount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Ex.: 50">
+              </label>
+            </div>
+            <p class="payment-notice" id="paymentNotice">Aceitamos dinheiro e cartões de crédito e débito na entrega ou retirada. No PIX, enviaremos a chave pelo WhatsApp após confirmar o total.</p>
           </div>
         </section>
 
@@ -85,7 +123,7 @@
 
           <div class="cart-summary-meta">
             <span class="cart-total-pill">
-              <small>Total</small>
+              <small id="cartTotalLabel">Total</small>
               <strong id="cartTotal">R$ 0,00</strong>
             </span>
           </div>
@@ -102,7 +140,7 @@
         <div class="cart-details" id="cartDetails">
           <div class="summary-top"><p>ITENS DA SACOLA</p><button class="close-cart" id="closeCart" type="button" aria-label="Fechar sacola">×</button></div>
           <div class="cart-items" id="cartItems"></div>
-          <p class="pickup-note">Retirada no local · pagamento na retirada</p>
+          <p class="pickup-note">Escolha entrega ou retirada e a forma de pagamento antes de finalizar.</p>
           <button class="whatsapp" data-send-order id="sendOrder" type="button">Finalizar pedido no WhatsApp <span>↗</span></button>
         </div>
       </aside>
@@ -128,13 +166,13 @@
       <div class="info-modal-body">
         <div class="info-item">
           <span>Horários</span>
-          <p>Terça a domingo: 13:00 às 22:00</p>
-          <p>Segunda: fechado</p>
+          <p>Quarta a domingo: 14:30 às 02:00 (madrugada do dia seguinte)</p>
+          <p>Segunda e terça: fechado</p>
         </div>
 
         <div class="info-item">
           <span>WhatsApp</span>
-          <a href="https://wa.me/5553984415919" target="_blank" rel="noopener noreferrer">(53) 9 8441-5919</a>
+          <a href="https://wa.me/5553991883532" target="_blank" rel="noopener noreferrer">(53) 9 9188-3532</a>
         </div>
 
         <div class="info-item">
@@ -169,11 +207,11 @@
         </div>
         <div class="footer-section">
           <h4>Contato:</h4>
-          <a href="https://wa.me/5553984415919" target="_blank" rel="noopener noreferrer">WhatsApp: (53) 9 8441-5919</a>
+          <a href="https://wa.me/5553991883532" target="_blank" rel="noopener noreferrer">WhatsApp: (53) 9 9188-3532</a>
         </div>
         <div class="footer-section">
           <h4>Horários:</h4>
-          <p>Ter á Dom : 13:00 às 22:00 - Segunda : Fechado</p>
+          <p>Qua a Dom: 14:30 às 02:00 (dia seguinte) · Seg e Ter: Fechado</p>
         </div>
       </div>
     </div>
