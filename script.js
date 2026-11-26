@@ -1,12 +1,12 @@
 const WHATSAPP = '5553991883532'; // Brasil (55) + DDD 53 + número do panfleto.
 const BUSINESS_HOURS = {
-  0: { start: 14 * 60 + 30, end: 2 * 60 },
+  0: { start: 14 * 60 + 30, end: 3 * 60 },
   1: null,
   2: null,
-  3: { start: 14 * 60 + 30, end: 2 * 60 },
-  4: { start: 14 * 60 + 30, end: 2 * 60 },
-  5: { start: 14 * 60 + 30, end: 2 * 60 },
-  6: { start: 14 * 60 + 30, end: 2 * 60 }
+  3: { start: 14 * 60 + 30, end: 1 * 60 + 30 },
+  4: { start: 14 * 60 + 30, end: 1 * 60 + 30 },
+  5: { start: 14 * 60 + 30, end: 1 * 60 + 30 },
+  6: { start: 14 * 60 + 30, end: 3 * 60 }
 };
 function updateBusinessStatus(){
   const now=new Date();
