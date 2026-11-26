@@ -137,8 +137,7 @@ button { -webkit-tap-highlight-color: transparent; }
   gap: 8px;
 }
 
-.profile-social-link,
-.profile-info-icon {
+.profile-social-link {
   display: inline-flex;
   width: 30px;
   height: 30px;
@@ -171,23 +170,9 @@ button { -webkit-tap-highlight-color: transparent; }
 
 .whatsapp-link { color: #168b4b; }
 .instagram-link { color: #b52e79; }
+.maps-link { color: #2877c7; }
+.clock-link { color: var(--purple); }
 .instagram-link .instagram-dot { fill: currentColor; stroke: none; }
-
-.profile-info-icon {
-  transition: transform .2s, background .2s;
-}
-
-.profile-info-icon:hover,
-.profile-info-icon:focus-visible {
-  transform: translateY(-2px);
-  background: #efe0f2;
-}
-
-.profile-info-icon img {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-}
 
 .info-modal-overlay {
   position: fixed;
