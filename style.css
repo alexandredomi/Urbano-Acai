@@ -128,13 +128,59 @@ button { -webkit-tap-highlight-color: transparent; }
   position: relative;
 }
 
-.profile-info-icon {
+.profile-social-links {
   position: absolute;
   bottom: 5px;
   right: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-social-link,
+.profile-info-icon {
   display: inline-flex;
+  width: 30px;
+  height: 30px;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  background: #f6edf8;
+}
+
+.profile-social-link {
+  color: var(--purple);
+  transition: transform .2s, background .2s;
+}
+
+.profile-social-link:hover,
+.profile-social-link:focus-visible {
+  transform: translateY(-2px);
+  background: #efe0f2;
+}
+
+.profile-social-link svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.whatsapp-link { color: #168b4b; }
+.instagram-link { color: #b52e79; }
+.instagram-link .instagram-dot { fill: currentColor; stroke: none; }
+
+.profile-info-icon {
+  transition: transform .2s, background .2s;
+}
+
+.profile-info-icon:hover,
+.profile-info-icon:focus-visible {
+  transform: translateY(-2px);
+  background: #efe0f2;
 }
 
 .profile-info-icon img {
