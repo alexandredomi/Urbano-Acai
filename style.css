@@ -1004,3 +1004,11 @@ footer p { margin: 0; color: #d9c8dc; font-size: 12px; }
 
   footer .container { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
+
+@media (max-width: 395px) {
+  .profile-social-links {
+    position: static;
+    justify-content: flex;
+    margin-top: 8px;
+  }
+}
