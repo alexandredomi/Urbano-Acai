@@ -1,14 +1,15 @@
 const CATALOG_KEY = 'acai-urbano-catalogo';
 const defaultCatalog = {
   sizes: [
-  { name: 'Pequeno', detail: '300 ml', price: 12 },
-  { name: 'Médio', detail: '500 ml', price: 16 },
-  { name: 'Grande', detail: '700 ml', price: 20 }
+  { name: 'Pequeno', detail: '150 ml', price: 12 },
+  { name: 'Médio', detail: '300 ml', price: 17 },
+  { name: 'Grande', detail: '500 ml', price: 25 }
   ],
-  included: ['Granola', 'Leite em pó', 'Paçoca', 'Amendoim', 'Confete', 'Coco ralado', 'Farinha láctea', 'Calda de morango'],
+  included: ['Amendoim triturado', 'Banana', 'Bis branco', 'Bis ao leite', 'Leite em pó', 'Farofa de paçoca', 'Granola', 'Leite condensado', 'Creme cookies and cream'],
   extras: [
-  { name: 'Morango', price: 3 }, { name: 'Banana', price: 2 }, { name: 'Nutella', price: 4 },
-  { name: 'Leite Ninho', price: 3 }, { name: 'Ovomaltine', price: 3 }, { name: 'Whey protein', price: 5 }
+  { name: 'Chocoball', price: 2.99 }, { name: 'Confete', price: 2.99 }, { name: 'Stikadinho', price: 3.99 },
+  { name: 'Ovomaltine', price: 3.99 }, { name: 'Ouro Branco', price: 4.99 }, { name: 'Creme Bueno', price: 4.99 },
+  { name: 'Creme Leitinho', price: 4.99 }, { name: 'Creme Avelã', price: 4.99 }, { name: 'Creme de Amendoim', price: 4.99 }
   ]
 };
 let catalog = defaultCatalog;
